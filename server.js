@@ -18,17 +18,19 @@ var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/drawings', function (req, res) {
-  var newDrawing = new Drawing({ name: 'FooPoo' });
-  newDrawing.save();
+  // var newDrawing = new Drawing({ name: 'FooPoo' });
+  // newDrawing.save();
   res.send('What it doooooooo');
 });
 
 app.get('/drawings/:id', function (req, res) {
-
+  res.send(req.body._id);
 });
 
 app.post('/drawings', function (req, res) {
-
+  var newDrawing = new Drawing({name: req.body.name});
+  newDrawing.save();
+  res.send('Post went through!');
 });
 
 app.put('drawings/:id', function (req, res) {
