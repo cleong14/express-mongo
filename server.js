@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var morgan = require('morgan');
 
 var mongoose = require('mongoose');
 
@@ -15,6 +16,8 @@ var Drawing = mongoose.model('Drawing', drawingSchema);
 
 var app = express();
 
+app.use(morgan('dev'));
+
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/drawings', function (req, res) {
@@ -24,7 +27,12 @@ app.get('/drawings', function (req, res) {
 });
 
 app.get('/drawings/:id', function (req, res) {
-  res.send(req.body._id);
+  var id = req.params.id;
+
+  Drawing.findOne({ _id: id })
+  .then(function (result) {
+    res.send(result);
+  });
 });
 
 app.post('/drawings', function (req, res) {
@@ -33,8 +41,14 @@ app.post('/drawings', function (req, res) {
   res.send('Post went through!');
 });
 
-app.put('drawings/:id', function (req, res) {
+app.put('/drawings/:id', function (req, res) {
+  var id = req.params.id;
 
+  Drawing.update({ _id: id },
+    { $set: { name: req.body.name} })
+  .then(function (result) {
+    res.json(result);
+  });
 });
 
 var db = mongoose.connection;
